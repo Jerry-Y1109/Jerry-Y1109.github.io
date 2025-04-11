@@ -54,9 +54,9 @@
 	    transition: transform 0.3s, background-color 0.3s;
 	}
 	
-	.enter.btn.hover {
+	.enter-btn:hover {
 	    background-color: #FF9900;
-	    transform:: scale (1.05);
+	    transform: scale(1.05);
 	}
 	
 	.enter-btn:active {
@@ -91,7 +91,6 @@
             transition: background-color 0.3s, color 0.3s;
         }
         
-        /* Dark mode */
         body.dark-mode {
             background-color: #121212;
             color: #f0f0f0;
@@ -279,7 +278,7 @@
 <body>
     <div id="warning-overlay">
 	<div id="warning-content">
-	    <h1 style="color: #FFAA33; font-size: 2.5em; margin-botton: 20px:">CAUTION</h1>
+	    <h1 style="color: #FFAA33; font-size: 2.5em; margin-bottom: 20px;">CAUTION</h1>
 	    <p style="font-size: 1.3em; line-height: 1.6; margin-bottom: 15px;">Hi, Mr Ma and his students, welcome to this website. This website is about Omar(failure) and Jerry(life winner), enjoy!!!
 	    <br></br>
 	    Bro check this out
@@ -291,6 +290,12 @@
 	    <p  style="font-style:italic; margin-top: 20px; color: #aaa;">if you are ready, press this </p>
 	    <button onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ')">16 or above</button> <button class="enter-btn" onclick="playSound('arshit'); hideOverlay()">let's go</button>
 	</div>
+    </div>
+
+    <div id="cookie-consent-banner" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #333; color: white; padding: 15px; text-align: center; z-index: 9998; box-shadow: 0 -2px 10px rgba(0,0,0,0.2);">
+	<p style="margin: 0 0 10px 0;">We use cookies to enhance your experience.</p>
+	<button onclick="acceptCookies()" style="background: #4CAF50; color: white; border: none; padding: 8px 20px; margin: 0 10px; cursor: pointer; border-radius: 4px;">Accept</button>
+	<button onclick="declineCookies()" style="background: #f44336; color: white; border: none; padding: 8px 20px; margin: 0 10px; cursor: pointer; border-radius: 4px;">Decline</button>
     </div>
 	
     <button id="theme-toggle" onclick="toggleTheme()">Dark Mode</button>
@@ -344,7 +349,7 @@
         </div>
         <h2 class="cyan-text">let's listen Omar's singing, press him </h2>
         
-	<img src="omareating.JPG" alt:"Omar" onclick="playSound('linggangu')">
+	<img src="omareating.JPG" alt="Omar" onclick="playSound('linggangu')">
 	<h4>Omar want to tell you something Press it!!!</h4>
 	<h3 class="red-text"> If you are REALLY REALLY REALLY interested in Omar</h3>
 	<p>Find OMAR.W on TikTok</p>
@@ -364,7 +369,7 @@
     <div id="secret" class="page">
 	<h1 class="shiny-metal"> Secret page unlocked!</h1>
 	<p class="gold-text"> Damn! You have found out a secret page</p>
-	<img src="unclesam.jpeg" alt="secret image" style=" 200px";">
+	<img src="unclesam.jpeg" alt="secret image" style="width:200px">
 	<br>
 	<div style="margin: 20px 0; text-align: center;">
 	    <img src="omarex.JPG" alt="Omar" style="width:300px; height:auto; aspect-ratio:16/9; border: 3px solid var(--border-color); display: block; margin: 0 auto;" onclick="playSound('omarcry')">
@@ -393,39 +398,103 @@
 
     <script>
 
+	function checkCookieConsent() {
+    	    if (getCookie('cookieConsent') === 'true') return true;
+    	    if (getCookie('cookieConsent') === 'false') return false;
+    	    document.getElementById('cookie-consent-banner').style.display = 'block';
+        return null;
+	}
+
+	function acceptCookies() {
+    	    setCookie('cookieConsent', 'true', 365);
+	    document.getElementById('cookie-consent-banner').style.display = 'none';	
+	}
+
+	function declineCookies() {
+    	    setCookie('cookieConsent', 'false', 365);
+    	    document.getElementById('cookie-consent-banner').style.display = 'none';
+    	    document.cookie = 'darkMode=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    	    document.cookie = 'warningSeen=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+	}
+
+	function setCookie(name, value, days) {
+    	    if (getCookie('cookieConsent') !== 'true') return;
+    	    const date = new Date();
+    	    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    	    const expires = "expires=" + date.toUTCString();
+    	    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+	}
+
+	window.onload = function() {
+    	    checkCookieConsent();
+    	    if (getCookie('cookieConsent') === 'true') {
+        	if (getCookie('warningSeen') === 'true') hideOverlay();
+        	if (getCookie('darkMode') === 'true') {
+            	    document.body.classList.add('dark-mode');
+            	    document.getElementById('theme-toggle').textContent = 'Light Mode';
+        	}
+    	    }
+	};
+	
+	function setCookie(name, value, days) {
+	    const date = new Date();
+	    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+	    const expires = "expires=" + date.toUTCString();
+	    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+	}
+	
+	function getCookie(name) {
+	    const cookieName = name +"=";
+	    const decodedCookie = decodeURIComponent(document.cookie);
+	    const cookieArray = decodedCookie.split(';');
+	    for(let i = 0; i <cookieArray.length; i++) {
+		let cookie = cookieArray[i];
+		while (cookie.charAt(0) === ' ') {
+		    cookie = cookie.substring(1)
+		}
+		if (cookie.indexOf(cookieName) === 0) {
+		    return cookie.substring(cookieName.length, cookie.length);
+		}
+	    }
+	    return "";
+	}
+
             let currentMedia = null;
 	
 	function hideOverlay() {
 	    const overlay = document.getElementById('warning-overlay');
 	    if (overlay) {
 		overlay.style.display = 'none';
+		setCookie('warningSeen', 'true', 30);
 	    } else {
 		console.error("Warning overlay not found");
 	    }
 	}
+	
+	window.onload = function() {
+	    if(getCookie('warningSeen') === 'true') {
+		hideOverlay();
+	    }
+	};
 
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
-            // Save preference to localStorage
             const isDark = document.body.classList.contains('dark-mode');
-            localStorage.setItem('darkMode', isDark);
-            // Update button text
+	    setCookie('darkMode' , isDark, 30);
             document.getElementById('theme-toggle').textContent = isDark ? 'Light Mode' : 'Dark Mode';
         }
+	
+	if (getCookie('darkMode') === 'true') {
+	    document.body.classList.add('dark-mode');
+	    document.getElementById('theme-toggle').textContent = 'Light Mode';
+	}
         
-        if (localStorage.getItem('darkMode')) {
-            if (localStorage.getItem('darkMode') === 'true') {
-                document.body.classList.add('dark-mode');
-                document.getElementById('theme-toggle').textContent = 'Light Mode';
-            }
-        }
 
         function showPage(pageId) {
             if (currentMedia) {
                 currentMedia.pause();
                 if(currentMedia.tagName === 'VIDEO') {
                     currentMedia.style.display = 'none';
-                    //Show the image again if we're hiding a video
                     currentMedia.previousElementSibling.style.display = 'block';
                 }
                 currentMedia = null;
@@ -470,7 +539,6 @@
                 currentMedia.pause();
                 if (currentMedia.tagName === 'VIDEO') {
                     currentMedia.style.display = 'none';
-                    // Show the image again if we're hiding a video
                     const prevImg = currentMedia.previousElementSibling;
                     if (prevImg) prevImg.style.display = 'block';
                 }
